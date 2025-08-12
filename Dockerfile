@@ -17,7 +17,7 @@ RUN yarn build:ci
 FROM node:18-alpine
 
 # Add env
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 
 RUN apk add --no-cache bash curl jq && \
     curl -J -L -o /tmp/bashio.tar.gz "https://github.com/hassio-addons/bashio/archive/v0.13.1.tar.gz" && \
