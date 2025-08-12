@@ -1,3 +1,127 @@
+## v1.1.22
+
+**New Features**
+
+- (Scanner) Add support for partial name matching
+- (Scanner) Support scanning for all devices
+- (BLE) Log errors on BLE characteristic write failures
+- (Keeson) Send stop command after movement commands
+- (Common) Correctly handle errors in repeated commands
+
+**Bug Fixes**
+
+- (Keeson) Fix checksum calculation for base-i4 & base-i5 controllers
+- (Keeson) Fix support for base-i4 controllers
+- (BLE) Fix disconnect logic
+- (Common) Fix config issue
+
+## v1.1.21
+
+**New Features**
+
+- (Common) Treat names as case insensitive
+- (Scanner) Add BLE scanner helper
+
+**_Motor Controls_**
+
+- (ErgoMotion) Support extending motor control commands
+- (ErgoWifi) Support extending motor control commands
+- (Keeson) Support extending motor control commands
+- (LeggettPlatt) Support extending motor control commands
+- (Linak) Support extending motor control commands
+- (Logicdata) Support extending motor control commands
+- (MotoSleep) Support extending motor control commands
+- (Octo) Support extending motor control commands
+- (Okimat) Support extending motor control commands
+- (Richmat) Support extending motor control commands
+- (Solace) Support extending motor control commands
+
+**Bug Fixes**
+
+- (Octo) Correctly handle multiple commands
+- (Octo) Fix PIN command
+
+## v1.1.20
+
+**New Features**
+
+- (Keeson) Add support for base-i4 controllers
+- (Keeson) Remove need for base-i5 names to match and have expect services
+
+**Bug Fixes**
+
+- (Octo) Fix motor buttons not working
+- (Sleeptracker) Filter out in-active devices
+- (Octo) Allow octo in the config file
+
+## v1.1.19
+
+**New Features**
+
+- (HomeAssistant) Add new cover entity type
+- (Common) Improve the delays in commands
+- (Keeson) Add support for base-i5 controllers
+- (MotoSleep) Added antisnore, ZeroG, and TV features to new beds
+- (MotoSleep) Expand massage support for 3-motor beds
+- (Octo) Add support for Octo controlled beds
+- (Okimat) Add support for programming memory positions
+- (Okimat) Add support for 82417 remote code
+- (Okimat) Add support for 91244 remote code
+- (Richmat) Add support for AZRN remote code
+- (Richmat) Add support for BVRM remote code
+- (Richmat) Error if unsupported remote code used
+
+**_Motor Controls_**
+
+- (ErgoMotion) Add prototype motor control entities
+- (ErgoWifi) Add prototype motor control entities
+- (Keeson) Add prototype motor control entities
+- (LeggettPlatt) Add prototype motor control entities
+- (Linak) Add prototype motor control entities
+- (Logicdata) Add prototype motor control entities
+- (MotoSleep) Add prototype motor control entities
+- (Okimat) Add prototype motor control entities
+- (Reverie) Add prototype motor control entities
+- (Richmat) Add prototype motor control entities
+- (Sleeptracker) Add prototype motor control entities
+- (Solace) Add prototype motor control entities
+
+## v1.1.18
+
+**Bug Fixes**
+
+- (Reverie) Fix missing checksum on commands
+- (Okimat) Test repeated command for Flat preset
+
+## v1.1.17
+
+**Breaking Changes**
+
+- (Okimat) Rename FurniMove to Okimat since it's a more logical name
+
+**New Features**
+
+- (Keeson) Add initial support for Keeson beds
+
+**Bug Fixes**
+
+- (Okimat) Fix sending commands
+- (Okimat) Pair on connection
+
+## v1.1.16
+
+**New Features**
+
+- (Richmat) Add support for additional memory presets
+- (Richmat) Add W6RM remote code
+- (Richmat) Add X1RM remote code for Lucid L300 beds
+- (FurniMove) Add initial support for FurniMove beds
+
+**Bug Fixes**
+
+- (Solace) Handle mapping of certain characters in bed names
+- (Richmat) Fix default remote code
+
 ## v1.1.15
 
 **Bug Fixes**

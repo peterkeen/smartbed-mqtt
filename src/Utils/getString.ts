@@ -2,8 +2,9 @@ import Strings from 'Strings/en';
 import { Dictionary } from './Dictionary';
 let strings: Dictionary<string> = {};
 
-export const loadStrings = (language = 'en') => {
-  strings = require(`../Strings/${language}`).default;
+export const loadStrings = async (language = 'en') => {
+  const imported = await import(`../Strings/${language}`);
+  strings = imported.default ? imported.default : imported;
 };
 
 export type StringsKey = keyof typeof Strings;

@@ -8,15 +8,19 @@ import { getDeviceId } from './getDeviceId';
 import { getDevices } from './options';
 import { setupMassageEntities } from './setupMassageEntities';
 import { setupPresetButtons } from './setupPresetButtons';
+import { setupMotorEntities } from './setupMotorEntities';
 
 export const logicdata = async (mqtt: IMQTTConnection) => {
   const devices = getDevices();
   const devicesToDiscover = devices.filter((device) => !device.ipAddress);
   const discoveredDevices = await discoverUDPDevices(devicesToDiscover.map((d) => d.name));
-  const devicesMap = buildDictionary(discoveredDevices, (device) => ({ key: device.name, value: device }));
+  const devicesMap = buildDictionary(discoveredDevices, (device) => ({
+    key: device.name.toLowerCase(),
+    value: device,
+  }));
   for (const { name, ...device } of devices) {
     if (!device.ipAddress) {
-      const updDevice = devicesMap[name];
+      const updDevice = devicesMap[name.toLowerCase()];
       if (!updDevice) continue;
       device.ipAddress = updDevice.ipAddress;
     }
@@ -33,5 +37,6 @@ export const logicdata = async (mqtt: IMQTTConnection) => {
     logInfo('[Logicdata] Setting up entities for device:', name);
     setupPresetButtons(mqtt, controller);
     setupMassageEntities(mqtt, controller);
+    setupMotorEntities(mqtt, controller);
   }
 };

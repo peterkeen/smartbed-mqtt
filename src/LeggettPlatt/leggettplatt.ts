@@ -1,6 +1,7 @@
 import { IMQTTConnection } from '@mqtt/IMQTTConnection';
 import { buildDictionary } from '@utils/buildDictionary';
 import { logError, logInfo, logWarn } from '@utils/logger';
+import { setupDeviceInfoSensor } from 'BLE/setupDeviceInfoSensor';
 import { buildMQTTDeviceData } from 'Common/buildMQTTDeviceData';
 import { IESPConnection } from 'ESPHome/IESPConnection';
 import { controllerBuilder as gen2ControllerBuilder } from './Gen2/controllerBuilder';
@@ -16,18 +17,20 @@ export const leggettplatt = async (mqtt: IMQTTConnection, esphome: IESPConnectio
   const devices = getDevices();
   if (!devices.length) return logInfo('[LeggettPlatt] No devices configured');
 
-  const devicesMap = buildDictionary(devices, (device) => ({ key: device.name, value: device }));
+  const devicesMap = buildDictionary(devices, (device) => ({ key: device.name.toLowerCase(), value: device }));
   const deviceNames = Object.keys(devicesMap);
   if (deviceNames.length !== devices.length) return logError('[LeggettPlatt] Duplicate name detected in configuration');
   const bleDevices = await esphome.getBLEDevices(deviceNames);
   for (const bleDevice of bleDevices) {
-    const { name, mac, address, connect, disconnect, getServices } = bleDevice;
+    const { name, mac, address, connect, disconnect } = bleDevice;
 
     const controllerBuilder = checks
       .map((check, index) => (check(bleDevice) ? controllerBuilders[index] : undefined))
       .filter((check) => check)[0];
     if (controllerBuilder === undefined) {
-      const { manufacturerDataList, serviceUuidsList } = bleDevice;
+      const {
+        advertisement: { manufacturerDataList, serviceUuidsList },
+      } = bleDevice;
       logWarn(
         '[LeggettPlatt] Device not supported, please contact me on Discord',
         name,
@@ -36,15 +39,17 @@ export const leggettplatt = async (mqtt: IMQTTConnection, esphome: IESPConnectio
       continue;
     }
 
-    const device = devicesMap[mac] || devicesMap[name];
+    const device = devicesMap[mac] || devicesMap[name.toLowerCase()];
     const deviceData = buildMQTTDeviceData({ ...device, address }, 'LeggettPlatt');
     await connect();
 
-    const services = await getServices();
-
-    if (!controllerBuilder(mqtt, deviceData, bleDevice, services)) {
+    const controller = await controllerBuilder(mqtt, deviceData, bleDevice);
+    if (!controller) {
       await disconnect();
       continue;
     }
+
+    const deviceInfo = await bleDevice.getDeviceInfo();
+    if (deviceInfo) setupDeviceInfoSensor(mqtt, controller, deviceInfo);
   }
 };

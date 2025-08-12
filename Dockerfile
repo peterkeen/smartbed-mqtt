@@ -33,8 +33,8 @@ WORKDIR /smartbed-mqtt
 COPY run.sh /smartbed-mqtt/
 RUN chmod a+x run.sh
 
-COPY --from=0 /smartbed-mqtt/dist/tsc/ /smartbed-mqtt/
 COPY --from=0 /smartbed-mqtt/node_modules /smartbed-mqtt/node_modules
+COPY --from=0 /smartbed-mqtt/dist/tsc/ /smartbed-mqtt/
 
 ENTRYPOINT [ "/smartbed-mqtt/run.sh" ]
 #ENTRYPOINT [ "node", "index.js" ]
@@ -42,5 +42,5 @@ LABEL \
     io.hass.name="Smartbed Integration via MQTT" \
     io.hass.description="Home Assistant Community Add-on for Smartbeds" \
     io.hass.type="addon" \
-    io.hass.version="1.1.15" \
+    io.hass.version="1.1.22" \
     maintainer="Richard Hopton <richard@thehoptons.com>"

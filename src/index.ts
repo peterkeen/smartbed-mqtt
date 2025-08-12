@@ -1,18 +1,22 @@
 import { connectToMQTT } from '@mqtt/connectToMQTT';
 import { loadStrings } from '@utils/getString';
 import { logError, logWarn } from '@utils/logger';
+import { getType } from '@utils/options';
 import { connectToESPHome } from 'ESPHome/connectToESPHome';
 import { ergomotion } from 'ErgoMotion/ergomotion';
 import { ergowifi } from 'ErgoWifi/ergowifi';
+import { keeson } from 'Keeson/keeson';
 import { leggettplatt } from 'LeggettPlatt/leggettplatt';
 import { linak } from 'Linak/linak';
 import { logicdata } from 'Logicdata/logicdata';
 import { motosleep } from 'MotoSleep/motosleep';
+import { octo } from 'Octo/octo';
+import { okimat } from 'Okimat/okimat';
 import { reverie } from 'Reverie/reverie';
 import { richmat } from 'Richmat/richmat';
+import { scanner } from 'Scanner/scanner';
 import { sleeptracker } from 'Sleeptracker/sleeptracker';
 import { solace } from 'Solace/solace';
-import { getType } from './Utils/options';
 
 const processExit = (exitCode?: number) => {
   if (exitCode && exitCode > 0) {
@@ -32,8 +36,8 @@ process.on('uncaughtException', (err) => {
   processExit(2);
 });
 
-const start = async (): Promise<void> => {
-  loadStrings();
+const start = async () => {
+  await loadStrings();
 
   const mqtt = await connectToMQTT();
 
@@ -63,6 +67,14 @@ const start = async (): Promise<void> => {
       return void (await reverie(mqtt, esphome));
     case 'leggettplatt':
       return void (await leggettplatt(mqtt, esphome));
+    case 'okimat':
+      return void (await okimat(mqtt, esphome));
+    case 'keeson':
+      return void (await keeson(mqtt, esphome));
+    case 'octo':
+      return void (await octo(mqtt, esphome));
+    case 'scanner':
+      return void (await scanner(esphome));
   }
 };
 void start();

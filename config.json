@@ -1,6 +1,6 @@
 {
   "name": "Smartbed MQTT",
-  "version": "1.1.15",
+  "version": "1.1.22",
   "slug": "smartbed-mqtt",
   "description": "A Home Assistant add-on to enable controlling smart beds.",
   "url": "https://github.com/richardhopton/smartbed-mqtt",
@@ -59,7 +59,8 @@
       {
         "name": "LINAK Bed 0123",
         "friendlyName": "Linak Bed",
-        "hasMassage": true
+        "hasMassage": true,
+        "motorCount": 2
       }
     ],
     "solaceDevices": [
@@ -85,14 +86,35 @@
         "name": "Smart Bed",
         "friendlyName": "Leggett Platt Bed"
       }
-    ]
+    ],
+    "okimatDevices": [
+      {
+        "name": "OKIN_345678",
+        "friendlyName": "Okimat Bed",
+        "remoteCode": "94238"
+      }
+    ],
+    "keesonDevices": [
+      {
+        "name": "KSBT03C000015046",
+        "friendlyName": "Keeson Bed"
+      }
+    ],
+    "octoDevices": [
+      {
+        "name": "RC2",
+        "friendlyName": "Octo Bed",
+        "pin": "1234"
+      }
+    ],
+    "scannerDevices": []
   },
   "schema": {
     "mqtt_host": "str",
     "mqtt_port": "str",
     "mqtt_user": "str",
     "mqtt_password": "password",
-    "type": "list(sleeptracker|ergowifi|richmat|linak|solace|motosleep|reverie|leggettplatt|logicdata|ergomotion)",
+    "type": "list(scanner|sleeptracker|ergowifi|richmat|linak|solace|motosleep|reverie|leggettplatt|logicdata|ergomotion|okimat|keeson|octo)",
     "sleeptrackerRefreshFrequency": "int(0,)",
     "sleeptrackerCredentials": [
       {
@@ -143,7 +165,8 @@
       {
         "name": "str",
         "friendlyName": "str",
-        "hasMassage": "bool?"
+        "hasMassage": "bool?",
+        "motorCount": "int?"
       }
     ],
     "solaceDevices": [
@@ -169,6 +192,32 @@
       {
         "name": "str",
         "friendlyName": "str"
+      }
+    ],
+    "okimatDevices": [
+      {
+        "name": "str",
+        "friendlyName": "str",
+        "remoteCode": "str"
+      }
+    ],
+    "keesonDevices": [
+      {
+        "name": "str",
+        "friendlyName": "str"
+      }
+    ],
+    "octoDevices": [
+      {
+        "name": "str",
+        "friendlyName": "str",
+        "pin": "str?"
+      }
+    ],
+    "scannerDevices": [
+      {
+        "name": "str",
+        "pair": "bool?"
       }
     ]
   }

@@ -2,7 +2,6 @@ import { Button } from '@ha/Button';
 import { IMQTTConnection } from '@mqtt/IMQTTConnection';
 import { StringsKey, getString } from '@utils/getString';
 import { logError } from '@utils/logger';
-import { wait } from '@utils/wait';
 import { IController } from 'Common/IController';
 import { buildEntityConfig } from 'Common/buildEntityConfig';
 import { Commands } from './Commands';
@@ -23,33 +22,23 @@ interface PresetButtonEntities {
 
 export const setupPresetButtons = (
   mqtt: IMQTTConnection,
-  { entities, deviceData, writeCommand }: IController<number[]>
+  { cache, deviceData, writeCommand }: IController<number[]>
 ) => {
-  const cache = entities as PresetButtonEntities;
-
   const buildCachedButton = (
     key: keyof PresetButtonEntities,
     name: StringsKey,
     command: number[],
     { category, repeat }: { category?: string; repeat?: true } = {}
   ) => {
-    let button = cache[key];
-    if (!button) {
-      button = cache[key] = new Button(mqtt, deviceData, buildEntityConfig(name, category), async () => {
-        try {
-          let count = repeat ? 100 : 1;
-          while (true) {
-            await writeCommand(command);
-            if (count === 0) break;
-            await wait(300);
-            count--;
-          }
-        } catch (e) {
-          logError(`[Linak] Failed to write '${getString(name)}'`, e);
-        }
-      });
-    }
-    button.setOnline();
+    if (cache[key]) return;
+
+    cache[key] = new Button(mqtt, deviceData, buildEntityConfig(name, category), async () => {
+      try {
+        await writeCommand(command, repeat && 100, repeat && 300);
+      } catch (e) {
+        logError(`[Linak] Failed to write '${getString(name)}'`, e);
+      }
+    }).setOnline();
   };
 
   buildCachedButton('presetMemory1', 'PresetMemory1', Commands.PresetMemory1, { repeat: true });

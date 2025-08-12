@@ -5,7 +5,7 @@ import { IMQTTConnection } from '@mqtt/IMQTTConnection';
 import { getString } from '@utils/getString';
 import { buildEntityConfig } from 'Common/buildEntityConfig';
 import { Commands, MassageZone } from './Commands';
-import { Controller } from './Controller';
+import { IController } from 'Common/IController';
 
 interface MassageEntities {
   massageStop?: Button;
@@ -15,21 +15,21 @@ interface MassageEntities {
   massagePreset?: Select;
 }
 
-export const setupMassageEntities = (mqtt: IMQTTConnection, { entities, deviceData, writeCommand }: Controller) => {
-  const cache = entities as MassageEntities;
-
+export const setupMassageEntities = (
+  mqtt: IMQTTConnection,
+  { cache: cache, deviceData, writeCommand }: IController<number[]>
+) => {
   const resetState = async () => {
-    cache.massageHead?.setState(0);
-    cache.massageLumbar?.setState(0);
-    cache.massageLeg?.setState(0);
-    cache.massagePreset?.setIndex(0);
+    let { massagePreset, massageHead, massageLumbar, massageLeg } = cache as MassageEntities;
+    massagePreset?.setIndex(0);
+    massageHead?.setState(0);
+    massageLumbar?.setState(0);
+    massageLeg?.setState(0);
     await writeCommand(Commands.MassageStop);
   };
 
   if (!cache.massageStop)
-    cache.massageStop = new Button(mqtt, deviceData, buildEntityConfig('MassageStop'), resetState);
-
-  cache.massageStop.setOnline();
+    cache.massageStop = new Button(mqtt, deviceData, buildEntityConfig('MassageStop'), resetState).setOnline();
 
   if (!cache.massagePreset) {
     const massagePresets = [
@@ -50,29 +50,32 @@ export const setupMassageEntities = (mqtt: IMQTTConnection, { entities, deviceDa
         const presetId = massagePresets.indexOf(state);
         if (presetId <= 0) return resetState();
         await writeCommand(Commands.MassagePreset(presetId - 1));
-        if ((cache.massagePreset?.getIndex() || 0) === 0) {
-          cache.massageHead?.setState(5);
-          cache.massageLumbar?.setState(5);
-          cache.massageLeg?.setState(5);
+        let { massagePreset, massageHead, massageLumbar, massageLeg } = cache as MassageEntities;
+        if ((massagePreset?.getIndex() || 0) === 0) {
+          massageHead?.setState(5);
+          massageLumbar?.setState(5);
+          massageLeg?.setState(5);
         }
       }
-    );
+    ).setOnline();
   }
-  cache.massagePreset?.setOnline();
 
   const getLevelCommand = (zone: MassageZone, level: number) => {
-    const commandBuilder = !(cache.massagePreset?.getIndex() || 0)
+    const { massagePreset } = cache as MassageEntities;
+
+    const commandBuilder = !(massagePreset?.getIndex() || 0)
       ? Commands.MassageLevelManual
       : Commands.MassageLevelPreset;
     return commandBuilder(zone, level);
   };
 
-  const resetWhenLevelsAreZero = ({ head, lumbar, leg }: { head?: number; lumbar?: number; leg?: number }) => {
-    if (head === undefined) head = cache.massageHead?.getState();
-    if (lumbar === undefined) lumbar = cache.massageLumbar?.getState();
-    if (leg === undefined) leg = cache.massageLeg?.getState();
+  const resetWhenLevelsAreZero = async ({ head, lumbar, leg }: { head?: number; lumbar?: number; leg?: number }) => {
+    let { massageHead, massageLumbar, massageLeg } = cache as MassageEntities;
+    if (head === undefined) head = massageHead?.getState();
+    if (lumbar === undefined) lumbar = massageLumbar?.getState();
+    if (leg === undefined) leg = massageLeg?.getState();
     if (head === 0 && lumbar === 0 && leg === 0) {
-      resetState();
+      await resetState();
     }
   };
 
@@ -83,11 +86,10 @@ export const setupMassageEntities = (mqtt: IMQTTConnection, { entities, deviceDa
       { min: 0, max: 10, ...buildEntityConfig('MassageHead') },
       async (level) => {
         await writeCommand(getLevelCommand(MassageZone.Head, level));
-        resetWhenLevelsAreZero({ head: level });
+        await resetWhenLevelsAreZero({ head: level });
       }
-    );
+    ).setOnline();
   }
-  cache.massageHead.setOnline();
 
   if (!cache.massageLumbar) {
     cache.massageLumbar = new NumberSlider(
@@ -96,11 +98,10 @@ export const setupMassageEntities = (mqtt: IMQTTConnection, { entities, deviceDa
       { min: 0, max: 10, ...buildEntityConfig('MassageLumbar') },
       async (level) => {
         await writeCommand(getLevelCommand(MassageZone.Lumbar, level));
-        resetWhenLevelsAreZero({ lumbar: level });
+        await resetWhenLevelsAreZero({ lumbar: level });
       }
-    );
+    ).setOnline();
   }
-  cache.massageLumbar.setOnline();
 
   if (!cache.massageLeg) {
     cache.massageLeg = new NumberSlider(
@@ -109,9 +110,8 @@ export const setupMassageEntities = (mqtt: IMQTTConnection, { entities, deviceDa
       { min: 0, max: 10, ...buildEntityConfig('MassageLeg') },
       async (level) => {
         await writeCommand(getLevelCommand(MassageZone.Leg, level));
-        resetWhenLevelsAreZero({ leg: level });
+        await resetWhenLevelsAreZero({ leg: level });
       }
-    );
+    ).setOnline();
   }
-  cache.massageLeg.setOnline();
 };

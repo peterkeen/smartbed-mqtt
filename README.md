@@ -24,6 +24,9 @@ This project aims to enable remote control of adjustable smart beds from HomeAss
 - [MotoSleep](#motosleep-support-ble) [experimental]
 - [Reverie](#reverie-support-ble) [prototype]
 - [Leggett & Platt](#leggett--platt-support-ble) (Okin & Richmat variants) [prototype]
+- [Okimat](#okimat-support-ble) [prototype]
+- [Keeson](#keeson-support-ble) [prototype]
+- [Octo](#octo-support-ble) [prototype]
 
 # Installation
 
@@ -74,13 +77,12 @@ e.g.
 - Buttons to step thru the massage strengths, patterns & timer (auto turn off massage)
 - Sensors for Massage strengths and patterns
 - Support for split beds, and multiple beds
+- Covers to control motors for raising, lowering, and stopping the head/feet/tilt/lumbar
 
 ## Possible future features:
 
-- Buttons to control raising and lowering head/feet
 - Configuration of bed "alarm"
 - Service to trigger sleep summary email to be sent from Sleeptracker
-- Switches to control presets
 
 ## Features that can't be done:
 
@@ -109,6 +111,7 @@ You must specify an `ipAddress` (or DNS name), `friendlyName`, and `remoteStyle`
 - Buttons to trigger the presets
 - Button for under bed lights
 - Buttons to step thru the massage strengths for head & foot, massage mode, and toggle
+- Covers to control motors for raising, lowering, and stopping the head/feet/tilt/lumbar
 
 ## Notes
 
@@ -128,10 +131,7 @@ You must specify at least one Logicdata controller with `name` and `friendlyName
 - Buttons to trigger the user presets
 - Buttons to program the user presets
 - Controls for the head, lumbar & leg massage intesity & massage mode
-
-## Possible future features:
-
-- Buttons/Cover to control raising and lowering head/leg
+- Covers to control motors for raising, lowering, and stopping the head/legs
 
 ## Notes
 
@@ -151,12 +151,13 @@ You must specify at least one bleProxy as demonstrated in the config defaults. Y
 - Buttons to program the presets
 - Button for under bed lights
 - Buttons to step thru the massage strengths for head & foot, massage mode, and toggle
+- Covers to control motors for raising, lowering, and stopping the pillow/head/feet/lumbar
 
 ## Notes
 
 Setting `stayConnected` to `true` will stop you from being able to use the app to control the bed if the bed only accepts one Bluetooth connection.
 
-Support for this was only possible due to assistance from getrav on Discord. This was reverse engineered from a Sven & Son bed, so your mileage may vary.
+Support for this was only possible due to assistance from getrav on Discord. This was originally reverse engineered from a Sven & Son bed, so your mileage may vary.
 
 # Linak Support (BLE)
 
@@ -171,6 +172,7 @@ You must specify at least one bleProxy as demonstrated in the config defaults. Y
 - Button & switch for under bed lights
 - Sensor to read the back & leg angles
 - Buttons to control massage strengths for head, foot or both, massage mode, and toggle/off
+- Covers to control motors for raising, lowering, and stopping the head/leg
 
 ## Notes
 
@@ -190,6 +192,7 @@ You must specify at least one bleProxy as demonstrated in the config defaults. Y
 - Buttons to trigger the user presets
 - Buttons to program the user presets
 - Buttons to reset the user presets
+- Covers to control motors for raising, lowering, and stopping the back/legs/lift/tilt
 
 ## Notes
 
@@ -211,10 +214,7 @@ You must specify at least one bleProxy as demonstrated in the config defaults. Y
 - Buttons to step thru the massage for head & foot
 - Buttons to turn off head or foot massage
 - Button to stop all motors & massage
-
-## Possible future features:
-
-- Buttons/Cover to control raising and lowering head/feet/lumbar/neck/tilt
+- Covers to control motors for raising, lowering, and stopping the head/feet/lumbar/neck/tilt
 
 ## Notes
 
@@ -235,10 +235,10 @@ You must specify at least one bleProxy as demonstrated in the config defaults. Y
 - Buttons to program the user presets
 - Button to toggle under bed lights
 - Controls for the head & foot massage intesity & massage wave
+- Covers to control motors for setting the position of the head/feet
 
 ## Possible future features:
 
-- Buttons/Cover to control raising and lowering head/feet
 - Controls for the under bed light brightness
 
 ## Notes
@@ -260,16 +260,70 @@ You must specify at least one bleProxy as demonstrated in the config defaults. Y
 - Buttons to program the user presets
 - Light to control under bed lights
 - Controls for the head & foot massage intesity & massage wave
-
-## Possible future features:
-
-- Buttons/Cover to control raising and lowering head/feet
+- Covers to control motors for raising, lowering, and stopping the head/feet/pillow/lumbar
 
 ## Notes
 
 This remains connected to the bed controller and due to the bed only accepting one connection it will stop you from using the app to control the bed.
 
 Initial prototyping was only possible due to assistance from MarcusW on Discord.
+
+# Okimat Support (BLE)
+
+## Configuring
+
+You must specify at least one bleProxy as demonstrated in the config defaults. You also need to supply at least one Okimat controller with `name`, `friendlyName` and `remoteCode`.
+
+## Current features include (depending on remote code support):
+
+- Buttons to trigger the flat preset
+- Buttons to trigger the user presets
+- Buttons to program the user presets
+- Button for under bed lights
+- Covers to control motors for raising, lowering, and stopping the back & legs
+
+## Notes
+
+Support for this was only possible due to assistance from david_nagy, corne & PT on Discord.
+
+# Keeson Support (BLE)
+
+> Keeson motor controllers are used by many bed manufacturers including (but not limited to) Member's Mark, Purple, ErgoMotion. The prototype was tested using the [Member's Mark Premier Adjustable Base](https://www.samsclub.com/p/-/prod22421683) bed variant.
+
+## Configuring
+
+You must specify at least one bleProxy as demonstrated in the config defaults. You also need to supply at least one Keeson controller with `name` and `friendlyName`.
+
+## Current features include:
+
+- Buttons to trigger the standard presets
+- Buttons to trigger the user presets
+- Buttons to program the user presets
+- Controls for the head & foot massage intesity, wave setting & timer
+- Covers to control motors for raising, lowering, and stopping the head/feet/tilt/lumbar
+
+## Notes
+
+This remains connected to the bed controller and due to the bed only accepting one connection it will stop you from using the app to control the bed.
+
+Initial prototyping was only possible due to assistance from [@alanbixby](https://github.com/alanbixby/) on Discord.
+
+# Octo Support (BLE)
+
+## Configuring
+
+You must specify at least one bleProxy as demonstrated in the config defaults. You also need to supply at least one Octo controller with `name`, `friendlyName`, and optional `pin`.
+
+## Current features include:
+
+- Button for under bed lights, if present
+- Covers to control motors for raising, lowering, and stopping the head/legs
+
+## Notes
+
+This remains connected to the bed controller and due to the bed only accepting one connection it will stop you from using the app to control the bed.
+
+Initial prototyping was only possible due to assistance from Murp on Discord.
 
 # Support
 
